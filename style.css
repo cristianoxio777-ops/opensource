@@ -1,0 +1,389 @@
+/* =========================================================
+   🎨 한양대 ERICA 공부장소 추천기 - style.css
+   - 이 파일을 style.css 이름으로 저장
+   - index.html <head> 안에
+       <link rel="stylesheet" href="style.css">
+     추가해서 사용
+   ========================================================= */
+
+/* -----------------------------
+   색상 변수 (여기만 바꾸면 전체 톤이 같이 바뀜)
+   ----------------------------- */
+:root {
+  --hy-navy: #003a70;        /* 메인 남색 (한양대 느낌) */
+  --hy-navy-light: #e6f0fb;  /* 연한 남색 톤 배경 */
+  --hy-accent: #335f99;      /* 버튼/포인트 색 */
+  --hy-bg: #f5f7fb;          /* 전체 페이지 배경색 */
+  --hy-text: #222222;        /* 기본 글자색 */
+  --hy-muted: #777777;       /* 설명/보조 텍스트 색 */
+}
+
+/* 박스 모델 통일 (레이아웃 안정) */
+* {
+  box-sizing: border-box;
+}
+
+/* -----------------------------
+   전체 페이지 기본 설정
+   ----------------------------- */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  background: var(--hy-bg);
+  color: var(--hy-text);
+}
+
+/* 화면 중앙에 카드 하나 뜨게 하는 래퍼 */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;   /* 가로 가운데 */
+  align-items: flex-start;   /* 세로는 위쪽에서 시작 */
+  padding: 32px 16px;
+}
+
+/* 메인 카드 (웹앱 틀) */
+.app-card {
+  background: #ffffff;
+  border-radius: 18px;
+  max-width: 960px;
+  width: 100%;
+  padding: 24px 24px 32px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* -----------------------------
+   헤더 (로고 + 제목)
+   ----------------------------- */
+header.app-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* 동그란 로고 영역 */
+.logo-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--hy-navy-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;   /* 로고 이미지 튀어나오지 않게 */
+  flex-shrink: 0;
+}
+
+/* 로고 이미지 비율 유지 */
+.logo-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* 제목 텍스트 */
+.title-wrap h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--hy-navy);
+}
+
+.title-wrap p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--hy-muted);
+}
+
+/* -----------------------------
+   메인 콘텐츠 영역
+   ----------------------------- */
+.content {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* -----------------------------
+   진행 상태 바 (위의 짝대기들)
+   - HTML에서 몇 칸이든 .progress-step 갯수만 맞추면 됨
+   - 기본은 회색, JS에서 .active 붙이면 남색으로 변경
+   ----------------------------- */
+.progress {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* 기본 상태: 회색 막대 */
+.progress-step {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: #e1e6f0;
+  overflow: hidden;
+}
+
+/* 선택된 질문까지: 남색 막대
+   (JS에서 .progress-step에 active 클래스를 붙여줌) */
+.progress-step.active {
+  background: var(--hy-accent);
+}
+
+/* -----------------------------
+   질문 리스트 전체
+   ----------------------------- */
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 개별 질문 카드 */
+.question {
+  padding: 16px 16px 18px;
+  border-radius: 12px;
+  background: #f9fbff;  /* 살짝 파란기 도는 흰색 */
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Q1 · Q2 같은 상단 라인 */
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Q1 뱃지 스타일 */
+.question-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--hy-accent);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+/* 질문 라벨 (예: 오늘 공부 목적) */
+.question-label {
+  font-size: 0.8rem;
+  color: var(--hy-muted);
+}
+
+/* 질문 문장 */
+.question-text {
+  margin: 4px 0 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--hy-text);
+}
+
+/* 선택지 전체 묶음 */
+.options {
+  display: flex;
+  flex-wrap: wrap;  /* 길어지면 다음 줄로 */
+  gap: 8px;
+}
+
+/* -----------------------------
+   선택지 버튼 (클릭되는 느낌 포인트)
+   ----------------------------- */
+.option-button {
+  border: 1px solid var(--hy-accent);  /* 테두리 색 */
+  background: #ffffff;                 /* 기본 배경 */
+  color: var(--hy-accent);             /* 기본 글자색 */
+  border-radius: 999px;                /* 알약 버튼 */
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.15s ease, color 0.15s ease,
+              box-shadow 0.15s ease, transform 0.05s ease;
+  white-space: nowrap;                 /* 버튼 안 줄바꿈 방지 */
+}
+
+/* 마우스 올렸을 때 */
+.option-button:hover {
+  background: var(--hy-navy-light);    /* 연한 남색 배경 */
+  box-shadow: 0 0 0 2px rgba(0, 58, 112, 0.08);
+}
+
+/* 눌렀을 때(누르는 순간) */
+.option-button:active {
+  transform: scale(0.97);              /* 살짝 작아져서 눌린 느낌 */
+}
+
+/* 실제로 선택된 상태 (JS에서 .selected 추가)
+   → 진한 남색 + 흰 글씨 */
+.option-button.selected {
+  background: var(--hy-navy);
+  color: #ffffff;
+  border-color: var(--hy-navy);
+  box-shadow: 0 0 0 2px rgba(0, 58, 112, 0.12);
+  transform: translateY(1px);          /* 살짝 눌린 것처럼 */
+}
+
+/* -----------------------------
+   하단 컨트롤 (추천 받기 버튼 위치)
+   ----------------------------- */
+.controls {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 메인 추천 버튼 스타일 */
+.primary-button {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  background: var(--hy-navy);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  transition: background-color 0.15s ease, transform 0.08s ease,
+              box-shadow 0.15s ease;
+}
+
+/* 추천 버튼 hover */
+.primary-button:hover {
+  background: #002145;  /* 더 진한 남색 */
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.14);
+}
+
+/* 추천 버튼 active */
+.primary-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
+}
+
+/* -----------------------------
+   결과 영역 (추천 장소 카드)
+   ----------------------------- */
+
+/* 기본은 숨김 / JS에서 .visible 추가하면 보임 */
+.result-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+/* 결과가 있을 때 보여주는 클래스 */
+.result-section.visible {
+  display: block;
+}
+
+/* 결과 카드 전체 박스 */
+.result-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 16px 16px 18px;
+  display: flex;
+  gap: 16px;
+}
+
+/* 왼쪽 썸네일 영역 (장소 사진) */
+.result-image-wrap {
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  background: var(--hy-navy-light);  /* 사진 없을 때 기본 배경색 */
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--hy-muted);
+  text-align: center;
+  padding: 6px;
+}
+
+/* 결과 이미지 */
+.result-image-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;         /* 영역 꽉 채우기 + 비율 유지 */
+}
+
+/* 오른쪽 텍스트 영역 */
+.result-body {
+  flex: 1;
+}
+
+/* 추천 장소 이름 */
+.result-title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--hy-navy);
+}
+
+/* 추천 장소 설명 */
+.result-desc {
+  margin: 4px 0 8px;
+  font-size: 0.9rem;
+  color: var(--hy-text);
+}
+
+/* 태그 묶음 */
+.result-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* 개별 태그 (🔇, 🔌 등) */
+.tag {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--hy-navy-light);
+  color: var(--hy-accent);
+  white-space: nowrap;
+}
+
+/* -----------------------------
+   푸터
+   ----------------------------- */
+footer {
+  margin-top: 18px;
+  font-size: 0.75rem;
+  color: var(--hy-muted);
+  text-align: right;
+}
+
+/* -----------------------------
+   반응형 (모바일 화면용)
+   ----------------------------- */
+@media (max-width: 768px) {
+  .app-card {
+    padding: 18px 16px 24px;
+  }
+
+  header.app-header {
+    align-items: flex-start;
+  }
+
+  .result-card {
+    flex-direction: column;   /* 모바일에서는 위아래로 배치 */
+  }
+
+  .result-image-wrap {
+    width: 100%;
+    height: 160px;           /* 사진 영역 크게 */
+  }
+}

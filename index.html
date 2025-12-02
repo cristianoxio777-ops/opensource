@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>오늘의 공부 장소 추천기 | Hanyang ERICA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ✅ style.css 파일을 같은 폴더에 두고 사용할 것 -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="app-card">
+      <!-- =========================
+           상단 헤더 (로고 + 제목)
+           ========================= -->
+      <header class="app-header">
+        <div class="logo-wrap">
+          <!-- TODO: 여기 src에 한양대학교 ERICA 로고 이미지 경로를 넣어주세요 -->
+          <!-- 예시: <img src="images/hyu_logo.png" alt="한양대학교 ERICA 로고" /> -->
+          <span style="font-size: 0.65rem; text-align: center; color: var(--hy-muted);">
+            HYU<br />LOGO
+          </span>
+        </div>
+        <div class="title-wrap">
+          <h1>오늘의 공부 장소 추천기</h1>
+          <p>몇 가지 질문으로 오늘 공부하기 딱 좋은 한양대 ERICA 장소를 골라줘요.</p>
+        </div>
+      </header>
+
+      <main class="content">
+        <!-- =========================
+             진행 상태 표시 바
+             - 처음에는 전부 회색
+             - 질문에 답하면 남색으로 바뀜(JS에서 active 클래스 추가)
+             ========================= -->
+        <div class="progress" aria-hidden="true">
+          <!-- ❗️처음에는 active 클래스 없음 (모두 회색) -->
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+          <div class="progress-step"></div>
+        </div>
+
+        <!-- =========================
+             질문 리스트 (총 4개)
+             ========================= -->
+        <section class="question-list">
+          <!-- Q1: 공부 목적 -->
+          <article class="question" data-question-id="q1">
+            <div class="question-header">
+              <span class="question-badge">Q1</span>
+              <span class="question-label">오늘 공부 목적</span>
+            </div>
+            <p class="question-text">오늘은 어떤 공부를 주로 할 예정인가요?</p>
+            <div class="options">
+              <!-- TODO: 필요하면 버튼 텍스트/값 수정 가능 -->
+              <button type="button" class="option-button" data-value="문제풀이">
+                문제풀이/과제
+              </button>
+              <button type="button" class="option-button" data-value="암기">
+                암기·정리
+              </button>
+              <button type="button" class="option-button" data-value="팀플">
+                팀플·조별과제
+              </button>
+            </div>
+          </article>
+
+          <!-- Q2: 소음 허용 정도 -->
+          <article class="question" data-question-id="q2">
+            <div class="question-header">
+              <span class="question-badge">Q2</span>
+              <span class="question-label">소음 허용 정도</span>
+            </div>
+            <p class="question-text">주변 소음은 어느 정도가 편한가요?</p>
+            <div class="options">
+              <button type="button" class="option-button" data-value="매우조용">
+                완전 조용해야 함
+              </button>
+              <button type="button" class="option-button" data-value="보통">
+                적당히 말소리·생활소음 괜찮음
+              </button>
+              <button type="button" class="option-button" data-value="자유">
+                카페처럼 조금 시끌시끌해도 됨
+              </button>
+            </div>
+          </article>
+
+          <!-- Q3: 이동 거리 -->
+          <article class="question" data-question-id="q3">
+            <div class="question-header">
+              <span class="question-badge">Q3</span>
+              <span class="question-label">이동 거리</span>
+            </div>
+            <p class="question-text">오늘은 어느 정도까지 걸어갈 수 있나요?</p>
+            <div class="options">
+              <button type="button" class="option-button" data-value="가까운곳">
+                지금 건물 근처면 좋겠어요
+              </button>
+              <button type="button" class="option-button" data-value="적당히">
+                캠퍼스 안이면 다 괜찮아요
+              </button>
+              <button type="button" class="option-button" data-value="상관없음">
+                거리 상관 없이 분위기 좋은 곳이면 OK
+              </button>
+            </div>
+          </article>
+
+          <!-- Q4: 인원 수 (새로 추가된 질문) -->
+          <article class="question" data-question-id="q4">
+            <div class="question-header">
+              <span class="question-badge">Q4</span>
+              <span class="question-label">함께 공부하는 인원</span>
+            </div>
+            <p class="question-text">몇 명의 인원이 공부하러 가나요?</p>
+            <div class="options">
+              <!-- TODO: 필요하면 텍스트/값 수정 가능 -->
+              <button type="button" class="option-button" data-value="1명">
+                1명
+              </button>
+              <button type="button" class="option-button" data-value="2~3명">
+                2~3명
+              </button>
+              <button type="button" class="option-button" data-value="4명이상">
+                4명 이상
+              </button>
+            </div>
+          </article>
+
+          <!-- TODO: 질문을 더 추가하고 싶으면 위 article 구조를 복사해서 사용 -->
+        </section>
+
+        <!-- =========================
+             추천 받기 버튼
+             ========================= -->
+        <div class="controls">
+          <button type="button" class="primary-button" id="recommend-btn">
+            오늘의 공부 장소 추천 받기
+            <span aria-hidden="true">📍</span>
+          </button>
+        </div>
+
+        <!-- =========================
+             결과 영역 (처음엔 숨김)
+             ========================= -->
+        <section class="result-section" id="result-section" aria-live="polite">
+          <h2
+            style="
+              font-size: 0.95rem;
+              font-weight: 600;
+              margin: 0 0 10px;
+              color: var(--hy-muted);
+            "
+          >
+            오늘의 추천 장소
+          </h2>
+
+          <div class="result-card">
+            <div class="result-image-wrap">
+              <!-- TODO: 여기 src에 네이버 블로그에 있는 실제 공부 장소 사진 경로를 넣어주세요 -->
+              <!-- 예시: <img src="images/library_3f.jpg" alt="중앙도서관 3층 일반열람실" /> -->
+              <span>
+                장소 사진<br />추가 가능
+              </span>
+            </div>
+            <div class="result-body">
+              <h3 class="result-title" id="result-name">
+                <!-- TODO: 여기에 네이버 블로그에 나온 정확한 장소명을 넣어주세요 -->
+                추천 장소 이름이 여기에 표시됩니다
+              </h3>
+              <p class="result-desc" id="result-desc">
+                <!-- TODO: 장소 분위기·특징 설명을 네이버 블로그 내용 참고해서 직접 적어주세요 -->
+                선택한 답변을 바탕으로 오늘 공부하기 좋은 장소를 여기에서 안내합니다.
+              </p>
+              <div class="result-tags" id="result-tags">
+                <!-- TODO: 태그 문구는 자유롭게 수정/추가 가능 -->
+                <span class="tag">🔇 조용한 분위기</span>
+                <span class="tag">🔌 콘센트 있음</span>
+                <span class="tag">☕ 카페와 비교적 가까움</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <!-- TODO: 필요하면 제작자 정보나 학과명 등 간단한 문구를 여기에 적어주세요 -->
+        Made for Hanyang University ERICA study life ✏️
+      </footer>
+    </div>
+  </div>
+
+  <!-- =========================
+       간단한 JS (진행 바 + 선택 상태 + 추천 로직)
+       ========================= -->
+  <script>
+    // 진행 상태 업데이트 함수
+    function updateProgress() {
+      const steps = document.querySelectorAll(".progress-step");
+      const questions = document.querySelectorAll(".question");
+
+      steps.forEach((step, index) => {
+        const q = questions[index];
+        if (!q) return;
+
+        const selected = q.querySelector(".option-button.selected");
+        // 해당 질문에 선택지가 있으면 active 추가 → 남색으로 변경
+        if (selected) {
+          step.classList.add("active");
+        } else {
+          step.classList.remove("active");
+        }
+      });
+    }
+
+    // 옵션 버튼 클릭 시 선택 상태 및 진행 바 업데이트
+    document.querySelectorAll(".question .options").forEach(function (optionsWrap) {
+      optionsWrap.addEventListener("click", function (event) {
+        const target = event.target;
+        if (!target.classList.contains("option-button")) return;
+
+        // 같은 질문 안의 다른 옵션 선택 해제
+        optionsWrap.querySelectorAll(".option-button").forEach(function (btn) {
+          btn.classList.remove("selected");
+        });
+
+        // 현재 클릭된 버튼 선택
+        target.classList.add("selected");
+
+        // 진행 상태 막대 업데이트
+        updateProgress();
+      });
+    });
+
+    // 추천 버튼 클릭 시 결과 영역 보여주기 (간단한 예시 로직)
+    document.getElementById("recommend-btn").addEventListener("click", function () {
+      const resultSection = document.getElementById("result-section");
+
+      const answers = {};
+      document.querySelectorAll(".question").forEach(function (q) {
+        const qId = q.getAttribute("data-question-id");
+        const selected = q.querySelector(".option-button.selected");
+        if (selected) {
+          answers[qId] = selected.getAttribute("data-value");
+        }
+      });
+
+      const resultNameEl = document.getElementById("result-name");
+      const resultDescEl = document.getElementById("result-desc");
+      const resultTagsEl = document.getElementById("result-tags");
+
+      // -------------------------
+      // TODO: 여기부터 네이버 블로그에 나온 실제 장소 이름에 맞게
+      //       if 조건문을 직접 수정해서 추천 로직을 짜면 됩니다.
+      //       (지금은 단순 예시)
+      // -------------------------
+
+      if (answers.q1 === "문제풀이" && answers.q2 === "매우조용") {
+        // 예시: 조용한 문제풀이용 공간
+        resultNameEl.textContent = "중앙도서관 3층 일반열람실 (예시)";
+        resultDescEl.textContent =
+          "문제풀이와 집중 공부에 적합한 조용한 열람실입니다. 개인 좌석이 많고, 소음이 거의 없어 장시간 공부하기 좋아요.";
+        resultTagsEl.innerHTML = `
+          <span class="tag">🔇 아주 조용함</span>
+          <span class="tag">🪑 개인 좌석</span>
+          <span class="tag">📚 도서 접근 편리</span>
+        `;
+      } else if (answers.q1 === "팀플" || answers.q1 === "팀플·조별과제") {
+        // 예시: 팀플용 공간
+        resultNameEl.textContent = "학술정보관 그룹스터디룸 (예시)";
+        resultDescEl.textContent =
+          "서로 대화하면서 과제하기 좋은 공간입니다. 화이트보드와 모니터가 준비되어 있어 발표 준비에도 좋아요.";
+        resultTagsEl.innerHTML = `
+          <span class="tag">🧑‍🤝‍🧑 팀플에 적합</span>
+          <span class="tag">💬 자유로운 대화 가능</span>
+          <span class="tag">🖥 장비 비치</span>
+        `;
+      } else {
+        // 기본 추천
+        resultNameEl.textContent = "ARC 카페 인근 오픈 테이블 (예시)";
+        resultDescEl.textContent =
+          "조금은 활기찬 분위기에서 공부하고 싶을 때 좋은 자리입니다. 음료를 마시며 가볍게 과제하거나 정리하기 좋아요.";
+        resultTagsEl.innerHTML = `
+          <span class="tag">☕ 카페 분위기</span>
+          <span class="tag">🔌 일부 콘센트</span>
+          <span class="tag">😌 적당한 소음</span>
+        `;
+      }
+
+      // 결과 영역 보여주기
+      resultSection.classList.add("visible");
+    });
+  </script>
+</body>
+</html>
