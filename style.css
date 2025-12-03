@@ -1,389 +1,733 @@
-/* =========================================================
-   🎨 한양대 ERICA 공부장소 추천기 - style.css
-   - 이 파일을 style.css 이름으로 저장
-   - index.html <head> 안에
-       <link rel="stylesheet" href="style.css">
-     추가해서 사용
-   ========================================================= */
-
-/* -----------------------------
-   색상 변수 (여기만 바꾸면 전체 톤이 같이 바뀜)
-   ----------------------------- */
+/* =========================================
+   🎨 공통 색상/스타일 변수 (여기만 주로 바꾸면 됨!)
+   ========================================= */
 :root {
-  --hy-navy: #003a70;        /* 메인 남색 (한양대 느낌) */
-  --hy-navy-light: #e6f0fb;  /* 연한 남색 톤 배경 */
-  --hy-accent: #335f99;      /* 버튼/포인트 색 */
-  --hy-bg: #f5f7fb;          /* 전체 페이지 배경색 */
-  --hy-text: #222222;        /* 기본 글자색 */
-  --hy-muted: #777777;       /* 설명/보조 텍스트 색 */
+  --color-primary: #003366;      /* 메인 포인트 색 (한양대 느낌 남색) */
+  --color-primary-dark: #00234a; /* 포인트 색보다 더 진한 남색 (버튼 클릭 등) */
+  --color-primary-light: #e6edf5;/* 아주 연한 남색 (배경/뱃지 색) */
+  --color-bg: #f4f6fb;           /* 전체 페이지 배경색 */
+  --color-text: #222222;         /* 기본 글자색 */
+  --color-muted: #666666;        /* 서브 설명, 부가 텍스트 색 */
+
+  --radius-lg: 18px;  /* 큰 카드 모서리 둥글게 정도 */
+  --radius-md: 12px;  /* 작은 카드/버튼 모서리 둥글게 정도 */
+
+  --shadow-soft: 0 8px 20px rgba(0, 0, 0, 0.08); /* 카드에 들어가는 기본 그림자 */
+  --transition-fast: 0.2s ease;                  /* hover 시 부드러운 애니메이션 속도 */
 }
 
-/* 박스 모델 통일 (레이아웃 안정) */
+/* 전체 기본값 초기화 */
 * {
   box-sizing: border-box;
-}
-
-/* -----------------------------
-   전체 페이지 기본 설정
-   ----------------------------- */
-body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-  background: var(--hy-bg);
-  color: var(--hy-text);
 }
 
-/* 화면 중앙에 카드 하나 뜨게 하는 래퍼 */
-.page-wrapper {
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans KR",
+    "Segoe UI", sans-serif;
+  background-color: var(--color-bg); /* 페이지 배경색 */
+  color: var(--color-text);          /* 기본 글자색 */
   min-height: 100vh;
-  display: flex;
-  justify-content: center;   /* 가로 가운데 */
-  align-items: flex-start;   /* 세로는 위쪽에서 시작 */
-  padding: 32px 16px;
 }
 
-/* 메인 카드 (웹앱 틀) */
-.app-card {
-  background: #ffffff;
-  border-radius: 18px;
-  max-width: 960px;
-  width: 100%;
-  padding: 24px 24px 32px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-/* -----------------------------
-   헤더 (로고 + 제목)
-   ----------------------------- */
-header.app-header {
+/* ===========================
+   🧱 헤더 영역 (로고/시계/메뉴)
+   =========================== */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #ffffff; /* 헤더 배경 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* 헤더 아래 얇은 그림자 */
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* 동그란 로고 영역 */
-.logo-wrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--hy-navy-light);
+/* 왼쪽 로고+타이틀 묶음 */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 동그란 로고 박스 (이미지 넣는 곳) */
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;                   /* 완전 동그랗게 */
+  background-color: var(--color-primary-light); /* 로고 배경색 */
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;   /* 로고 이미지 튀어나오지 않게 */
-  flex-shrink: 0;
+  overflow: hidden;                      /* 이미지 넘치는 부분 잘라내기 */
 }
 
-/* 로고 이미지 비율 유지 */
-.logo-wrap img {
-  max-width: 100%;
-  max-height: 100%;
+.brand-logo img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
-/* 제목 텍스트 */
-.title-wrap h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--hy-navy);
-}
-
-.title-wrap p {
-  margin: 4px 0 0;
-  font-size: 0.9rem;
-  color: var(--hy-muted);
-}
-
-/* -----------------------------
-   메인 콘텐츠 영역
-   ----------------------------- */
-.content {
-  margin-top: 20px;
+/* 로고 옆 텍스트 영역 */
+.brand-text {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 2px;
 }
 
-/* -----------------------------
-   진행 상태 바 (위의 짝대기들)
-   - HTML에서 몇 칸이든 .progress-step 갯수만 맞추면 됨
-   - 기본은 회색, JS에서 .active 붙이면 남색으로 변경
-   ----------------------------- */
-.progress {
+/* ERICA STUDY SPOT 타이틀 */
+.brand-title {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 14px;
+  color: var(--color-primary); /* 포인트 남색 */
+}
+
+/* 작은 부제목 텍스트 */
+.brand-subtitle {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+/* 오른쪽 메뉴 + 시계 영역 */
+.header-right {
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+  align-items: center;
+  gap: 18px;
 }
 
-/* 기본 상태: 회색 막대 */
-.progress-step {
-  flex: 1;
-  height: 6px;
+/* 헤더 내 네비게이션 버튼들 */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 상단의 '오늘의 추천', '공부장소 전체 보기' 버튼 스타일 */
+.nav-button {
+  padding: 6px 12px;
+  border-radius: 999px;                    /* 완전 동글 동글 */
+  border: 1px solid var(--color-primary);  /* 남색 테두리 */
+  background-color: #ffffff;               /* 흰색 배경 */
+  font-size: 12px;
+  color: var(--color-primary);             /* 글자 남색 */
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast), box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+/* 상단 버튼 hover 효과 */
+.nav-button:hover {
+  background-color: var(--color-primary);     /* 배경 남색 */
+  color: #ffffff;                             /* 글자 흰색 */
+  box-shadow: 0 4px 10px rgba(0, 51, 102, 0.25); /* 살짝 글로우 */
+  transform: translateY(-1px);
+}
+
+/* 오른쪽 상단 시계 영역 */
+.clock {
+  text-align: right;
+  font-size: 11px;
+  color: var(--color-muted);
+  min-width: 120px;
+}
+
+/* 시계 시간 부분 (HH:MM:SS) */
+.clock-time {
+  font-weight: 600;
+  color: var(--color-primary);
+  display: block;
+}
+
+/* 시계 날짜 부분 (YYYY.MM.DD (요일)) */
+.clock-date {
+  display: block;
+}
+
+/* ===========================
+   📐 메인 레이아웃 (질문 + 결과)
+   =========================== */
+
+main {
+  max-width: 1200px;
+  margin: 20px auto 40px;
+  padding: 0 20px;
+}
+
+/* 왼쪽 질문, 오른쪽 결과 2열 레이아웃 */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* 화면 폭이 좁아질 때(태블릿/모바일) 1열로 변환 */
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 공통 패널 박스 (질문/결과/전체목록용 카드 틀) */
+.panel {
+  background-color: #ffffff;         /* 카드 배경 */
+  border-radius: var(--radius-lg);   /* 모서리 둥글게 */
+  box-shadow: var(--shadow-soft);    /* 공통 그림자 */
+  padding: 20px 20px 18px;
+}
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.panel-subtitle {
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-bottom: 14px;
+}
+
+/* ===========================
+   🔢 질문 진행 단계 표시 바
+   =========================== */
+
+.step-indicator {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4단계 */
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+/* 단계 하나 하나 (작은 바 모양) */
+.step-item {
+  height: 7px;
   border-radius: 999px;
-  background: #e1e6f0;
+  background-color: var(--color-primary-light); /* 비활성 단계 배경 */
+  cursor: pointer;
+  position: relative;
   overflow: hidden;
 }
 
-/* 선택된 질문까지: 남색 막대
-   (JS에서 .progress-step에 active 클래스를 붙여줌) */
-.progress-step.active {
-  background: var(--hy-accent);
+/* 단계 이름 텍스트 (예: '분위기') */
+.step-item::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--color-muted);
+  white-space: nowrap;
 }
 
-/* -----------------------------
-   질문 리스트 전체
-   ----------------------------- */
-.question-list {
+/* 현재 활성 단계 바 색상 */
+.step-item.active {
+  background-color: var(--color-primary);
+}
+
+/* 활성 단계 텍스트 색/두께 */
+.step-item.active::after {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+/* ===========================
+   ❓ 질문 카드/옵션 버튼들
+   =========================== */
+
+.questions {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
-/* 개별 질문 카드 */
-.question {
-  padding: 16px 16px 18px;
-  border-radius: 12px;
-  background: #f9fbff;  /* 살짝 파란기 도는 흰색 */
-  border: 1px solid rgba(0, 0, 0, 0.04);
+/* 각 질문 박스 */
+.question-card {
+  background-color: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid #dde2ee;  /* 연한 회색 테두리 */
+  padding: 14px 14px 12px;
+  transition: box-shadow var(--transition-fast),
+    transform var(--transition-fast), border-color var(--transition-fast);
 }
 
-/* Q1 · Q2 같은 상단 라인 */
-.question-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* 질문 카드 hover 시 살짝 떠오르는 효과 */
+.question-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  border-color: var(--color-primary-light);
+}
+
+/* 질문 제목 (예: '오늘 공부 분위기는?') */
+.question-title {
+  font-size: 13px;
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
-/* Q1 뱃지 스타일 */
-.question-badge {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #ffffff;
-  background: var(--hy-accent);
-  padding: 3px 8px;
-  border-radius: 999px;
-}
-
-/* 질문 라벨 (예: 오늘 공부 목적) */
-.question-label {
-  font-size: 0.8rem;
-  color: var(--hy-muted);
-}
-
-/* 질문 문장 */
-.question-text {
-  margin: 4px 0 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--hy-text);
-}
-
-/* 선택지 전체 묶음 */
-.options {
+/* 옵션 버튼들 묶음 */
+.option-list {
   display: flex;
-  flex-wrap: wrap;  /* 길어지면 다음 줄로 */
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+/* 각 질문 선택 버튼 */
+.option-button {
+  border-radius: 999px;
+  border: 1px solid var(--color-primary);    /* 기본 남색 테두리 */
+  padding: 5px 11px;
+  font-size: 11px;
+  background-color: #ffffff;                 /* 기본 흰색 배경 */
+  color: var(--color-primary);               /* 남색 글자 */
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    color var(--transition-fast), box-shadow var(--transition-fast),
+    transform var(--transition-fast), border-color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.3;
+}
+
+/* 옵션 버튼 hover 효과 */
+.option-button:hover {
+  background-color: var(--color-primary-light);    /* 옅은 남색 배경 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* 옵션 버튼이 선택된 상태 (.selected 클래스) */
+.option-button.selected {
+  background-color: var(--color-primary);      /* 진한 남색 배경 */
+  color: #ffffff;                              /* 글자 흰색 */
+  border-color: var(--color-primary-dark);     /* 더 진한 테두리 */
+  box-shadow: 0 4px 10px rgba(0, 51, 102, 0.4);
+}
+
+/* 질문 하단 작은 도움말 텍스트 */
+.question-helper {
+  margin-top: 5px;
+  font-size: 10px;
+  color: var(--color-muted);
+}
+
+/* 질문 하단 버튼 영역 (초기화/추천받기) */
+.question-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
   gap: 8px;
 }
 
-/* -----------------------------
-   선택지 버튼 (클릭되는 느낌 포인트)
-   ----------------------------- */
-.option-button {
-  border: 1px solid var(--hy-accent);  /* 테두리 색 */
-  background: #ffffff;                 /* 기본 배경 */
-  color: var(--hy-accent);             /* 기본 글자색 */
-  border-radius: 999px;                /* 알약 버튼 */
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  outline: none;
-  transition: background-color 0.15s ease, color 0.15s ease,
-              box-shadow 0.15s ease, transform 0.05s ease;
-  white-space: nowrap;                 /* 버튼 안 줄바꿈 방지 */
-}
-
-/* 마우스 올렸을 때 */
-.option-button:hover {
-  background: var(--hy-navy-light);    /* 연한 남색 배경 */
-  box-shadow: 0 0 0 2px rgba(0, 58, 112, 0.08);
-}
-
-/* 눌렀을 때(누르는 순간) */
-.option-button:active {
-  transform: scale(0.97);              /* 살짝 작아져서 눌린 느낌 */
-}
-
-/* 실제로 선택된 상태 (JS에서 .selected 추가)
-   → 진한 남색 + 흰 글씨 */
-.option-button.selected {
-  background: var(--hy-navy);
-  color: #ffffff;
-  border-color: var(--hy-navy);
-  box-shadow: 0 0 0 2px rgba(0, 58, 112, 0.12);
-  transform: translateY(1px);          /* 살짝 눌린 것처럼 */
-}
-
-/* -----------------------------
-   하단 컨트롤 (추천 받기 버튼 위치)
-   ----------------------------- */
-.controls {
-  margin-top: 12px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* 메인 추천 버튼 스타일 */
-.primary-button {
-  border: none;
+/* 파란색 메인 버튼 (오늘의 장소 추천 받기) */
+.primary-action {
   border-radius: 999px;
-  padding: 10px 20px;
-  background: var(--hy-navy);
-  color: #ffffff;
-  font-size: 0.95rem;
+  border: none;
+  padding: 7px 14px;
+  font-size: 12px;
   font-weight: 600;
+  background-color: var(--color-primary);
+  color: #ffffff;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-  transition: background-color 0.15s ease, transform 0.08s ease,
-              box-shadow 0.15s ease;
+  transition: background-color var(--transition-fast),
+    box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
-/* 추천 버튼 hover */
-.primary-button:hover {
-  background: #002145;  /* 더 진한 남색 */
-  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.14);
+/* 메인 버튼 hover 효과 */
+.primary-action:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.4);
+  transform: translateY(-1px);
 }
 
-/* 추천 버튼 active */
-.primary-button:active {
-  transform: translateY(1px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
+/* 회색 테두리 보조 버튼 (선택 초기화) */
+.secondary-action {
+  border-radius: 999px;
+  border: 1px solid #ccd3e3;
+  padding: 6px 12px;
+  font-size: 11px;
+  background-color: #ffffff;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+    box-shadow var(--transition-fast), transform var(--transition-fast),
+    color var(--transition-fast);
 }
 
-/* -----------------------------
-   결과 영역 (추천 장소 카드)
-   ----------------------------- */
-
-/* 기본은 숨김 / JS에서 .visible 추가하면 보임 */
-.result-section {
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.1);
-  display: none;
+/* 보조 버튼 hover 효과 */
+.secondary-action:hover {
+  background-color: #f5f6fb;
+  color: var(--color-primary);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
 }
 
-/* 결과가 있을 때 보여주는 클래스 */
-.result-section.visible {
-  display: block;
+/* 질문 필수 선택 안 했을 때 에러 메시지 */
+.error-text {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #cc0000;
 }
 
-/* 결과 카드 전체 박스 */
-.result-card {
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 16px 16px 18px;
+/* ===========================
+   🎯 추천 결과 카드 영역
+   =========================== */
+
+.result-header {
   display: flex;
-  gap: 16px;
-}
-
-/* 왼쪽 썸네일 영역 (장소 사진) */
-.result-image-wrap {
-  width: 120px;
-  height: 90px;
-  border-radius: 10px;
-  background: var(--hy-navy-light);  /* 사진 없을 때 기본 배경색 */
-  overflow: hidden;
-  flex-shrink: 0;
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  color: var(--hy-muted);
-  text-align: center;
-  padding: 6px;
+  margin-bottom: 10px;
+  gap: 8px;
 }
 
-/* 결과 이미지 */
-.result-image-wrap img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;         /* 영역 꽉 채우기 + 비율 유지 */
-}
-
-/* 오른쪽 텍스트 영역 */
-.result-body {
-  flex: 1;
-}
-
-/* 추천 장소 이름 */
 .result-title {
-  margin: 0 0 4px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 700;
-  color: var(--hy-navy);
+  color: var(--color-primary);
 }
 
-/* 추천 장소 설명 */
-.result-desc {
-  margin: 4px 0 8px;
-  font-size: 0.9rem;
-  color: var(--hy-text);
+.result-subtitle {
+  font-size: 11px;
+  color: var(--color-muted);
 }
 
-/* 태그 묶음 */
-.result-tags {
+/* 추천 결과 카드 리스트 */
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* 하나의 추천 카드 자체 */
+.spot-card {
+  background-color: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid #dde2ee;
+  padding: 12px 14px 11px;
+  cursor: pointer;
+  transition: box-shadow var(--transition-fast),
+    transform var(--transition-fast), border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+/* 추천 카드 hover 시 */
+.spot-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  border-color: var(--color-primary-light);
+  background-color: #f9fbff;
+}
+
+/* 추천 카드의 장소 이름 */
+.spot-name {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* 키워드 태그 묶음 */
+.tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 5px;
+  margin-bottom: 5px;
 }
 
-/* 개별 태그 (🔇, 🔌 등) */
+/* 하나의 태그 (24시간, 조용한 분위기 등) */
 .tag {
-  font-size: 0.75rem;
-  padding: 4px 8px;
+  font-size: 10px;
+  padding: 2px 8px;
   border-radius: 999px;
-  background: var(--hy-navy-light);
-  color: var(--hy-accent);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
   white-space: nowrap;
 }
 
-/* -----------------------------
-   푸터
-   ----------------------------- */
-footer {
-  margin-top: 18px;
-  font-size: 0.75rem;
-  color: var(--hy-muted);
-  text-align: right;
+/* 장소 요약 설명 */
+.spot-summary {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-bottom: 5px;
 }
 
-/* -----------------------------
-   반응형 (모바일 화면용)
-   ----------------------------- */
-@media (max-width: 768px) {
-  .app-card {
-    padding: 18px 16px 24px;
-  }
+/* 이용시간 등 메타 정보 */
+.spot-meta {
+  font-size: 10px;
+  color: var(--color-muted);
+}
 
-  header.app-header {
-    align-items: flex-start;
-  }
+/* 추천이 없을 때 안내 박스 */
+.empty-state {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-top: 8px;
+  background-color: #f5f6fb;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
 
-  .result-card {
-    flex-direction: column;   /* 모바일에서는 위아래로 배치 */
-  }
+/* ===========================
+   📚 전체 공부장소 목록 섹션
+   =========================== */
 
-  .result-image-wrap {
-    width: 100%;
-    height: 160px;           /* 사진 영역 크게 */
+#all-spots {
+  margin-top: 26px;
+  padding: 18px 18px 20px;
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+#all-spots h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+#all-spots p {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-bottom: 14px;
+}
+
+/* 전체 공부장소 카드 그리드 */
+.spot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* 모바일에서 1열로 */
+@media (max-width: 720px) {
+  .spot-grid {
+    grid-template-columns: 1fr;
   }
+}
+
+/* 각 공부장소 카드 (전체 목록용) */
+.spot-grid-card {
+  border-radius: var(--radius-md);
+  border: 1px solid #dde2ee;
+  padding: 10px 11px 9px;
+  background-color: #ffffff;
+  transition: box-shadow var(--transition-fast),
+    transform var(--transition-fast), border-color var(--transition-fast);
+  cursor: pointer;
+}
+
+/* 전체 목록 카드 hover */
+.spot-grid-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  border-color: var(--color-primary-light);
+}
+
+.spot-grid-name {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.spot-grid-desc {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-bottom: 5px;
+}
+
+.spot-grid-meta {
+  font-size: 10px;
+  color: var(--color-muted);
+}
+
+/* ===========================
+   🪟 모달(상세 보기) 스타일
+   =========================== */
+
+/* 모달 전체 배경 (검은 반투명) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: none; /* open 클래스가 붙으면 flex로 보이게 함 */
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* 모달이 열렸을 때 */
+.modal-overlay.open {
+  display: flex;
+}
+
+/* 모달 안 실제 카드 */
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 18px;
+  max-width: 720px;
+  width: calc(100% - 40px);
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  padding: 18px 18px 16px;
+}
+
+/* 모달 헤더(제목/닫기 버튼) */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.modal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* 모달 장소 이름 */
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* 모달 이용시간 텍스트 */
+.modal-hours {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+/* X 버튼 */
+.modal-close {
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: 4px;
+}
+
+/* 모달 본문 전체 컨테이너 */
+.modal-body {
+  font-size: 12px;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 모달 상단 태그들 */
+.modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* 모달 내 소제목 (사진 / 상세 설명 / 위치 안내 등) */
+.modal-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 3px;
+}
+
+/* 상세 설명 텍스트 */
+.modal-description {
+  font-size: 12px;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+/* 모달 내부 2열 구성 (왼쪽: 사진+설명 / 오른쪽: 지도) */
+.modal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: flex-start;
+}
+
+/* 화면 좁을 때 1열로 변환 */
+@media (max-width: 720px) {
+  .modal-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 모달 이미지 갤러리(사진 2개씩 배치) */
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.image-gallery img {
+  width: 100%;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  background-color: #eef1f8;
+}
+
+/* 지도 들어가는 박스 */
+.map-container {
+  width: 100%;
+  height: 180px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #eef1f8; /* 지도 없을 때 기본 배경 */
+  border: 1px solid #dde2ee;
+  font-size: 11px;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px;
+}
+
+/* 지도 안내 설명 텍스트 */
+.map-placeholder-text {
+  padding: 0 4px;
+}
+
+/* ===========================
+   🔚 푸터
+   =========================== */
+
+footer {
+  max-width: 1200px;
+  padding: 0 20px 20px;
+  margin: 0 auto;
+  font-size: 10px;
+  color: var(--color-muted);
+  text-align: right;
 }
