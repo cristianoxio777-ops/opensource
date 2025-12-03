@@ -1,294 +1,1404 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>오늘의 공부 장소 추천기 | Hanyang ERICA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- ✅ style.css 파일을 같은 폴더에 두고 사용할 것 -->
   <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <title>ERICA STUDY SPOT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --color-primary: #003366; /* 한양대 느낌 남색 */
+      --color-primary-dark: #00234a;
+      --color-primary-light: #e6edf5;
+      --color-bg: #f4f6fb;
+      --color-text: #222222;
+      --color-muted: #666666;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 8px 20px rgba(0, 0, 0, 0.08);
+      --transition-fast: 0.2s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans KR",
+        "Segoe UI", sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* HEADER */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--color-primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      font-size: 14px;
+      color: var(--color-primary);
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--color-muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-button {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--color-primary);
+      background-color: #ffffff;
+      font-size: 12px;
+      color: var(--color-primary);
+      cursor: pointer;
+      transition: background-color var(--transition-fast),
+        color var(--transition-fast), box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+    }
+
+    .nav-button:hover {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 51, 102, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .clock {
+      text-align: right;
+      font-size: 11px;
+      color: var(--color-muted);
+      min-width: 120px;
+    }
+
+    .clock-time {
+      font-weight: 600;
+      color: var(--color-primary);
+      display: block;
+    }
+
+    .clock-date {
+      display: block;
+    }
+
+    /* LAYOUT */
+
+    main {
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* QUESTION PANEL */
+
+    .panel {
+      background-color: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 20px 18px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 6px;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--color-muted);
+      margin-bottom: 14px;
+    }
+
+    .step-indicator {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .step-item {
+      height: 7px;
+      border-radius: 999px;
+      background-color: var(--color-primary-light);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-item::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      color: var(--color-muted);
+      white-space: nowrap;
+    }
+
+    .step-item.active {
+      background-color: var(--color-primary);
+    }
+
+    .step-item.active::after {
+      color: var(--color-primary-dark);
+      font-weight: 600;
+    }
+
+    .questions {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .question-card {
+      background-color: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid #dde2ee;
+      padding: 14px 14px 12px;
+      transition: box-shadow var(--transition-fast),
+        transform var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .question-card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+      transform: translateY(-1px);
+      border-color: var(--color-primary-light);
+    }
+
+    .question-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .option-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .option-button {
+      border-radius: 999px;
+      border: 1px solid var(--color-primary);
+      padding: 5px 11px;
+      font-size: 11px;
+      background-color: #ffffff;
+      color: var(--color-primary);
+      cursor: pointer;
+      transition: background-color var(--transition-fast),
+        color var(--transition-fast), box-shadow var(--transition-fast),
+        transform var(--transition-fast), border-color var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.3;
+    }
+
+    .option-button:hover {
+      background-color: var(--color-primary-light);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .option-button.selected {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary-dark);
+      box-shadow: 0 4px 10px rgba(0, 51, 102, 0.4);
+    }
+
+    .question-helper {
+      margin-top: 5px;
+      font-size: 10px;
+      color: var(--color-muted);
+    }
+
+    .question-actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .primary-action {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      background-color: var(--color-primary);
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color var(--transition-fast),
+        box-shadow var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .primary-action:hover {
+      background-color: var(--color-primary-dark);
+      box-shadow: 0 4px 12px rgba(0, 51, 102, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .secondary-action {
+      border-radius: 999px;
+      border: 1px solid #ccd3e3;
+      padding: 6px 12px;
+      font-size: 11px;
+      background-color: #ffffff;
+      color: var(--color-muted);
+      cursor: pointer;
+      transition: background-color var(--transition-fast),
+        box-shadow var(--transition-fast), transform var(--transition-fast),
+        color var(--transition-fast);
+    }
+
+    .secondary-action:hover {
+      background-color: #f5f6fb;
+      color: var(--color-primary);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .error-text {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #cc0000;
+    }
+
+    /* RESULT PANEL */
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .result-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .result-subtitle {
+      font-size: 11px;
+      color: var(--color-muted);
+    }
+
+    .result-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .spot-card {
+      background-color: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid #dde2ee;
+      padding: 12px 14px 11px;
+      cursor: pointer;
+      transition: box-shadow var(--transition-fast),
+        transform var(--transition-fast), border-color var(--transition-fast),
+        background-color var(--transition-fast);
+    }
+
+    .spot-card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+      transform: translateY(-1px);
+      border-color: var(--color-primary-light);
+      background-color: #f9fbff;
+    }
+
+    .spot-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background-color: var(--color-primary-light);
+      color: var(--color-primary-dark);
+      white-space: nowrap;
+    }
+
+    .spot-summary {
+      font-size: 11px;
+      color: var(--color-muted);
+      margin-bottom: 5px;
+    }
+
+    .spot-meta {
+      font-size: 10px;
+      color: var(--color-muted);
+    }
+
+    .empty-state {
+      font-size: 11px;
+      color: var(--color-muted);
+      margin-top: 8px;
+      background-color: #f5f6fb;
+      border-radius: 8px;
+      padding: 6px 8px;
+    }
+
+    /* ALL SPOTS SECTION */
+
+    #all-spots {
+      margin-top: 26px;
+      padding: 18px 18px 20px;
+      background-color: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    #all-spots h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: 6px;
+    }
+
+    #all-spots p {
+      font-size: 11px;
+      color: var(--color-muted);
+      margin-bottom: 14px;
+    }
+
+    .spot-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .spot-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .spot-grid-card {
+      border-radius: var(--radius-md);
+      border: 1px solid #dde2ee;
+      padding: 10px 11px 9px;
+      background-color: #ffffff;
+      transition: box-shadow var(--transition-fast),
+        transform var(--transition-fast), border-color var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .spot-grid-card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+      transform: translateY(-1px);
+      border-color: var(--color-primary-light);
+    }
+
+    .spot-grid-name {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .spot-grid-desc {
+      font-size: 11px;
+      color: var(--color-muted);
+      margin-bottom: 5px;
+    }
+
+    .spot-grid-meta {
+      font-size: 10px;
+      color: var(--color-muted);
+    }
+
+    /* MODAL */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: #ffffff;
+      border-radius: 18px;
+      max-width: 720px;
+      width: calc(100% - 40px);
+      max-height: calc(100vh - 60px);
+      overflow-y: auto;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      padding: 18px 18px 16px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .modal-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .modal-hours {
+      font-size: 11px;
+      color: var(--color-muted);
+    }
+
+    .modal-close {
+      border: none;
+      background: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--color-muted);
+      padding: 4px;
+    }
+
+    .modal-body {
+      font-size: 12px;
+      color: var(--color-text);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .modal-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: 3px;
+    }
+
+    .modal-description {
+      font-size: 12px;
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    .modal-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 720px) {
+      .modal-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .image-gallery img {
+      width: 100%;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      background-color: #eef1f8;
+    }
+
+    .map-container {
+      width: 100%;
+      height: 180px;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: #eef1f8;
+      border: 1px solid #dde2ee;
+      font-size: 11px;
+      color: var(--color-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .map-placeholder-text {
+      padding: 0 4px;
+    }
+
+    footer {
+      max-width: 1200px;
+      padding: 0 20px 20px;
+      margin: 0 auto;
+      font-size: 10px;
+      color: var(--color-muted);
+      text-align: right;
+    }
+  </style>
 </head>
 <body>
-  <div class="page-wrapper">
-    <div class="app-card">
-      <!-- =========================
-           상단 헤더 (로고 + 제목)
-           ========================= -->
-      <header class="app-header">
-        <div class="logo-wrap">
-          <!-- TODO: 여기 src에 한양대학교 ERICA 로고 이미지 경로를 넣어주세요 -->
-          <!-- 예시: <img src="images/hyu_logo.png" alt="한양대학교 ERICA 로고" /> -->
-          <span style="font-size: 0.65rem; text-align: center; color: var(--hy-muted);">
-            HYU<br />LOGO
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo">
+          <!-- TODO: 여기에 한양대 로고 이미지 경로를 넣으세요 -->
+          <!-- 예시: <img src="images/hanyang-logo.png" alt="한양대학교 로고" /> -->
+          <span style="font-size: 10px; color: var(--color-primary);">
+            HYU
           </span>
         </div>
-        <div class="title-wrap">
-          <h1>오늘의 공부 장소 추천기</h1>
-          <p>몇 가지 질문으로 오늘 공부하기 딱 좋은 한양대 ERICA 장소를 골라줘요.</p>
+        <div class="brand-text">
+          <span class="brand-title">ERICA STUDY SPOT</span>
+          <span class="brand-subtitle">오늘 공부할 최적의 공간 찾기</span>
         </div>
-      </header>
-
-      <main class="content">
-        <!-- =========================
-             진행 상태 표시 바
-             - 처음에는 전부 회색
-             - 질문에 답하면 남색으로 바뀜(JS에서 active 클래스 추가)
-             ========================= -->
-        <div class="progress" aria-hidden="true">
-          <!-- ❗️처음에는 active 클래스 없음 (모두 회색) -->
-          <div class="progress-step"></div>
-          <div class="progress-step"></div>
-          <div class="progress-step"></div>
-          <div class="progress-step"></div>
-        </div>
-
-        <!-- =========================
-             질문 리스트 (총 4개)
-             ========================= -->
-        <section class="question-list">
-          <!-- Q1: 공부 목적 -->
-          <article class="question" data-question-id="q1">
-            <div class="question-header">
-              <span class="question-badge">Q1</span>
-              <span class="question-label">오늘 공부 목적</span>
-            </div>
-            <p class="question-text">오늘은 어떤 공부를 주로 할 예정인가요?</p>
-            <div class="options">
-              <!-- TODO: 필요하면 버튼 텍스트/값 수정 가능 -->
-              <button type="button" class="option-button" data-value="문제풀이">
-                문제풀이/과제
-              </button>
-              <button type="button" class="option-button" data-value="암기">
-                암기·정리
-              </button>
-              <button type="button" class="option-button" data-value="팀플">
-                팀플·조별과제
-              </button>
-            </div>
-          </article>
-
-          <!-- Q2: 소음 허용 정도 -->
-          <article class="question" data-question-id="q2">
-            <div class="question-header">
-              <span class="question-badge">Q2</span>
-              <span class="question-label">소음 허용 정도</span>
-            </div>
-            <p class="question-text">주변 소음은 어느 정도가 편한가요?</p>
-            <div class="options">
-              <button type="button" class="option-button" data-value="매우조용">
-                완전 조용해야 함
-              </button>
-              <button type="button" class="option-button" data-value="보통">
-                적당히 말소리·생활소음 괜찮음
-              </button>
-              <button type="button" class="option-button" data-value="자유">
-                카페처럼 조금 시끌시끌해도 됨
-              </button>
-            </div>
-          </article>
-
-          <!-- Q3: 이동 거리 -->
-          <article class="question" data-question-id="q3">
-            <div class="question-header">
-              <span class="question-badge">Q3</span>
-              <span class="question-label">이동 거리</span>
-            </div>
-            <p class="question-text">오늘은 어느 정도까지 걸어갈 수 있나요?</p>
-            <div class="options">
-              <button type="button" class="option-button" data-value="가까운곳">
-                지금 건물 근처면 좋겠어요
-              </button>
-              <button type="button" class="option-button" data-value="적당히">
-                캠퍼스 안이면 다 괜찮아요
-              </button>
-              <button type="button" class="option-button" data-value="상관없음">
-                거리 상관 없이 분위기 좋은 곳이면 OK
-              </button>
-            </div>
-          </article>
-
-          <!-- Q4: 인원 수 (새로 추가된 질문) -->
-          <article class="question" data-question-id="q4">
-            <div class="question-header">
-              <span class="question-badge">Q4</span>
-              <span class="question-label">함께 공부하는 인원</span>
-            </div>
-            <p class="question-text">몇 명의 인원이 공부하러 가나요?</p>
-            <div class="options">
-              <!-- TODO: 필요하면 텍스트/값 수정 가능 -->
-              <button type="button" class="option-button" data-value="1명">
-                1명
-              </button>
-              <button type="button" class="option-button" data-value="2~3명">
-                2~3명
-              </button>
-              <button type="button" class="option-button" data-value="4명이상">
-                4명 이상
-              </button>
-            </div>
-          </article>
-
-          <!-- TODO: 질문을 더 추가하고 싶으면 위 article 구조를 복사해서 사용 -->
-        </section>
-
-        <!-- =========================
-             추천 받기 버튼
-             ========================= -->
-        <div class="controls">
-          <button type="button" class="primary-button" id="recommend-btn">
-            오늘의 공부 장소 추천 받기
-            <span aria-hidden="true">📍</span>
+      </div>
+      <div class="header-right">
+        <div class="nav-buttons">
+          <button class="nav-button" id="scrollToQuestions">
+            오늘의 추천
+          </button>
+          <button class="nav-button" id="scrollToAllSpots">
+            공부장소 전체 보기
           </button>
         </div>
+        <div class="clock">
+          <span class="clock-time" id="clockTime">--:--:--</span>
+          <span class="clock-date" id="clockDate">----.--.-- (---)</span>
+        </div>
+      </div>
+    </div>
+  </header>
 
-        <!-- =========================
-             결과 영역 (처음엔 숨김)
-             ========================= -->
-        <section class="result-section" id="result-section" aria-live="polite">
-          <h2
-            style="
-              font-size: 0.95rem;
-              font-weight: 600;
-              margin: 0 0 10px;
-              color: var(--hy-muted);
-            "
-          >
-            오늘의 추천 장소
-          </h2>
+  <main>
+    <div class="layout">
+      <!-- 질문 영역 -->
+      <section class="panel" id="questionPanel">
+        <h1 class="panel-title">오늘은 어디에서 공부할까요?</h1>
+        <p class="panel-subtitle">
+          아래 질문에 답하면, 지금 상황에 딱 맞는 공부 장소를 2곳 추천해 줄게요.
+        </p>
 
-          <div class="result-card">
-            <div class="result-image-wrap">
-              <!-- TODO: 여기 src에 네이버 블로그에 있는 실제 공부 장소 사진 경로를 넣어주세요 -->
-              <!-- 예시: <img src="images/library_3f.jpg" alt="중앙도서관 3층 일반열람실" /> -->
-              <span>
-                장소 사진<br />추가 가능
-              </span>
+        <div class="step-indicator" id="stepIndicator">
+          <div class="step-item active" data-step="1" data-label="분위기"></div>
+          <div class="step-item" data-step="2" data-label="인원"></div>
+          <div class="step-item" data-step="3" data-label="시간대"></div>
+          <div class="step-item" data-step="4" data-label="스타일"></div>
+        </div>
+
+        <div class="questions">
+          <!-- Q1: 분위기 -->
+          <div class="question-card" data-step="1">
+            <div class="question-title">1. 오늘 공부하고 싶은 분위기는 어떤가요?</div>
+            <div class="option-list" data-question="mood">
+              <button class="option-button" data-value="quiet">
+                완전 조용하게 집중하고 싶어요
+              </button>
+              <button class="option-button" data-value="lounge">
+                적당히 조용한 라운지 감성이 좋아요
+              </button>
+              <button class="option-button" data-value="talk">
+                친구랑 이야기 조금 하면서 공부하고 싶어요
+              </button>
+              <button class="option-button" data-value="team">
+                팀플/조별 과제를 할 거예요
+              </button>
             </div>
-            <div class="result-body">
-              <h3 class="result-title" id="result-name">
-                <!-- TODO: 여기에 네이버 블로그에 나온 정확한 장소명을 넣어주세요 -->
-                추천 장소 이름이 여기에 표시됩니다
-              </h3>
-              <p class="result-desc" id="result-desc">
-                <!-- TODO: 장소 분위기·특징 설명을 네이버 블로그 내용 참고해서 직접 적어주세요 -->
-                선택한 답변을 바탕으로 오늘 공부하기 좋은 장소를 여기에서 안내합니다.
-              </p>
-              <div class="result-tags" id="result-tags">
-                <!-- TODO: 태그 문구는 자유롭게 수정/추가 가능 -->
-                <span class="tag">🔇 조용한 분위기</span>
-                <span class="tag">🔌 콘센트 있음</span>
-                <span class="tag">☕ 카페와 비교적 가까움</span>
+            <p class="question-helper">
+              ※ 집중/수다/팀플 중 오늘에 가장 잘 맞는 한 가지를 골라 주세요.
+            </p>
+          </div>
+
+          <!-- Q2: 인원 -->
+          <div class="question-card" data-step="2">
+            <div class="question-title">2. 오늘 몇 명이서 공부하나요?</div>
+            <div class="option-list" data-question="people">
+              <button class="option-button" data-value="solo">1명 (혼자)</button>
+              <button class="option-button" data-value="small">2~3명</button>
+              <button class="option-button" data-value="large">4명 이상</button>
+            </div>
+          </div>
+
+          <!-- Q3: 시간대 -->
+          <div class="question-card" data-step="3">
+            <div class="question-title">3. 오늘 공부할 시간대는 어떻게 될 것 같아요?</div>
+            <div class="option-list" data-question="time">
+              <button class="option-button" data-value="late">
+                밤 늦게까지 / 심야 시간까지 공부할 것 같아요 (24시간 선호)
+              </button>
+              <button class="option-button" data-value="day">
+                주로 낮~저녁까지만 공부할 것 같아요
+              </button>
+            </div>
+          </div>
+
+          <!-- Q4: 스타일 -->
+          <div class="question-card" data-step="4">
+            <div class="question-title">4. 오늘은 어떤 공부 스타일/환경이 더 끌리나요?</div>
+            <div class="option-list" data-question="style">
+              <button class="option-button" data-value="handwriting">
+                책·필기 위주 (조용·차분)
+              </button>
+              <button class="option-button" data-value="laptop">
+                노트북/마우스 많이 쓸 것 같아요
+              </button>
+              <button class="option-button" data-value="print">
+                프린트 자주 해야 해요
+              </button>
+              <button class="option-button" data-value="sofa">
+                소파나 편한 자세가 중요해요
+              </button>
+              <button class="option-button" data-value="view">
+                탁 트인 뷰/창가 자리 선호
+              </button>
+              <button class="option-button" data-value="examQuiet">
+                시험기간처럼 완전 집중 모드
+              </button>
+              <button class="option-button" data-value="music">
+                잔잔한 음악 있는 공간도 좋아요
+              </button>
+            </div>
+            <p class="question-helper">
+              ※ 가장 끌리는 스타일을 하나 골라 주세요.
+            </p>
+          </div>
+        </div>
+
+        <div class="question-actions">
+          <button class="secondary-action" id="resetAnswers">
+            선택 초기화
+          </button>
+          <button class="primary-action" id="recommendButton">
+            오늘의 장소 추천 받기
+          </button>
+        </div>
+        <p class="error-text" id="errorMessage" style="display: none;"></p>
+      </section>
+
+      <!-- 추천 결과 영역 -->
+      <section class="panel">
+        <div class="result-header">
+          <div>
+            <div class="result-title">오늘의 추천 공부 장소</div>
+            <div class="result-subtitle">
+              카드 하나를 클릭하면 상세 설명과 이미지, 위치 안내를 볼 수 있어요.
+            </div>
+          </div>
+        </div>
+
+        <div class="result-list" id="resultList">
+          <div class="empty-state">
+            아직 추천이 없어요.<br />
+            왼쪽 질문에 답한 뒤 <strong>“오늘의 장소 추천 받기”</strong> 버튼을 눌러 주세요.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 전체 공부 장소 목록 -->
+    <section id="all-spots">
+      <h2>전체 공부 장소 목록</h2>
+      <p>
+        학교 안에서 사용할 수 있는 주요 공부 공간들을 한눈에 볼 수 있어요.
+        카드 클릭 시 상세 정보를 확인할 수 있습니다.
+      </p>
+
+      <div class="spot-grid" id="spotGrid">
+        <!-- JS에서 자동으로 카드들을 채웁니다. -->
+      </div>
+    </section>
+  </main>
+
+  <!-- 상세 모달 -->
+  <div class="modal-overlay" id="spotModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-title" id="modalTitle">장소 이름</div>
+          <div class="modal-hours" id="modalHours">이용시간 정보</div>
+        </div>
+        <button class="modal-close" id="modalClose" aria-label="닫기">
+          ✕
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tags" id="modalTags">
+          <!-- 태그 자동 채움 -->
+        </div>
+        <div class="modal-layout">
+          <div>
+            <div class="modal-section-title">사진</div>
+            <div class="image-gallery" id="modalImages">
+              <!-- TODO: 각 장소별 실제 사진 경로를 넣어주세요 -->
+              <!-- 예시 이미지 구조:
+              <img src="images/spot1-1.jpg" alt="장소 사진 1">
+              <img src="images/spot1-2.jpg" alt="장소 사진 2">
+              -->
+            </div>
+
+            <div class="modal-section-title">상세 설명</div>
+            <p class="modal-description" id="modalDescription">
+              장소에 대한 상세 설명이 여기에 들어갑니다.
+            </p>
+          </div>
+          <div>
+            <div class="modal-section-title">위치 안내 (지도)</div>
+            <div class="map-container" id="mapContainer">
+              <!-- TODO: 여기 안에 실제 지도 iframe을 넣으면 됩니다. -->
+              <!-- 예시 (구글 지도, 네이버 지도 등):
+              <iframe
+                src="지도_공유_URL"
+                width="100%"
+                height="100%"
+                style="border:0;"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+              -->
+              <div class="map-placeholder-text">
+                이 공간 안에 지도 API iframe을 삽입하면 실제 위치 지도가 표시됩니다.<br />
+                예: 네이버 지도, 카카오맵, 구글 지도에서
+                <strong>임베드 코드</strong>를 복사해 넣어 주세요.
               </div>
             </div>
           </div>
-        </section>
-      </main>
-
-      <footer>
-        <!-- TODO: 필요하면 제작자 정보나 학과명 등 간단한 문구를 여기에 적어주세요 -->
-        Made for Hanyang University ERICA study life ✏️
-      </footer>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- =========================
-       간단한 JS (진행 바 + 선택 상태 + 추천 로직)
-       ========================= -->
+  <footer>
+    ERICA STUDY SPOT &copy; <!-- 필요하면 연도나 본인 이름을 여기에 작성하세요 -->
+  </footer>
+
   <script>
-    // 진행 상태 업데이트 함수
-    function updateProgress() {
-      const steps = document.querySelectorAll(".progress-step");
-      const questions = document.querySelectorAll(".question");
+    /*
+      ===============================
+      시계(실시간 시간/날짜) 업데이트
+      ===============================
+    */
+    function updateClock() {
+      const timeEl = document.getElementById("clockTime");
+      const dateEl = document.getElementById("clockDate");
 
-      steps.forEach((step, index) => {
-        const q = questions[index];
-        if (!q) return;
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
 
-        const selected = q.querySelector(".option-button.selected");
-        // 해당 질문에 선택지가 있으면 active 추가 → 남색으로 변경
-        if (selected) {
-          step.classList.add("active");
-        } else {
-          step.classList.remove("active");
-        }
+      const hours = pad(now.getHours());
+      const minutes = pad(now.getMinutes());
+      const seconds = pad(now.getSeconds());
+      timeEl.textContent = `${hours}:${minutes}:${seconds}`;
+
+      const year = now.getFullYear();
+      const month = pad(now.getMonth() + 1);
+      const day = pad(now.getDate());
+      const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
+      const weekday = weekdayNames[now.getDay()];
+
+      dateEl.textContent = `${year}.${month}.${day} (${weekday})`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /*
+      ==================================
+      스크롤 버튼 (오늘의 추천 / 공부장소)
+      ==================================
+    */
+    document
+      .getElementById("scrollToQuestions")
+      .addEventListener("click", () => {
+        document
+          .getElementById("questionPanel")
+          .scrollIntoView({ behavior: "smooth" });
+      });
+
+    document
+      .getElementById("scrollToAllSpots")
+      .addEventListener("click", () => {
+        document
+          .getElementById("all-spots")
+          .scrollIntoView({ behavior: "smooth" });
+      });
+
+    /*
+      ==============================
+      공부 장소 데이터 정의 (JS 객체)
+      ==============================
+      - id: 내부 식별용
+      - name: 장소 이름
+      - keywords: 키워드 태그
+      - description: 상세 설명
+      - hours: 이용시간
+      - tags: 추천 로직에 사용하는 분류값 (분위기/용도 등)
+      - images: 모달에 표시할 이미지 경로 배열 (추후 직접 수정)
+      - mapNote: 지도 관련 안내 텍스트 또는 메모
+    */
+
+    const spots = [
+      {
+        id: "open-space",
+        name: "제1공학관 해동 Open Space",
+        keywords: ["오픈형", "프린트 가능", "휴식공간", "24시간"],
+        description:
+          "넓은 오픈형 좌석으로 자유롭게 앉아 공부할 수 있는 공간입니다. 프린트기가 있어 과제나 자료를 바로 출력할 수 있고, 중간중간 쉬어갈 수 있는 휴식 공간도 마련되어 있어 장시간 공부하기에 좋습니다.",
+        hours: "24시간",
+        tags: ["lounge", "print", "24h", "solo", "small"],
+        images: [
+          // TODO: 실제 이미지 경로로 교체하세요
+          // "images/open-space-1.jpg",
+          // "images/open-space-2.jpg",
+        ],
+        mapNote: "제1공학관 1층 해동 Open Space 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "hanjagong",
+        name: "제1공학관 한자공 라운지",
+        keywords: ["라운지", "팀플실", "편안한 분위기", "24시간"],
+        description:
+          "라운지 형태로 편안하게 앉아 공부할 수 있는 공간입니다. 분위기가 너무 엄숙하지 않아 부담 없이 머물 수 있고, 안쪽에는 팀플실이 따로 있어 조별 과제나 발표 준비에 활용하기 좋습니다.",
+        hours: "24시간",
+        tags: ["lounge", "team", "talk", "24h", "small", "large"],
+        images: [],
+        mapNote: "제1공학관 내부 한자공 라운지 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "haedong-reading",
+        name: "제5공학관 해동열람실",
+        keywords: ["진지한 분위기", "집중", "프린트 가능", "24시간"],
+        description:
+          "진지한 학습 분위기를 가진 열람실로, 2층까지 트여 있는 높은 천장 덕분에 답답하지 않습니다. 공간이 넓고 안정적인 느낌이라 혼자 조용히, 장시간 집중해서 공부하고 싶은 학생에게 잘 맞는 장소입니다. 프린트기도 비치되어 있습니다.",
+        hours: "24시간",
+        tags: ["quiet", "print", "24h", "solo", "examQuiet"],
+        images: [],
+        mapNote: "제5공학관 해동열람실 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "cluster-lounge",
+        name: "학연산클러스터지원센터 라운지",
+        keywords: ["오픈 라운지", "탁 트인 뷰", "채광 좋음", "스터디·팀플", "24시간"],
+        description:
+          "열람실보다는 오픈형 학습 라운지에 가까운 공간입니다. 높은 층수에서 내려다보이는 탁 트인 뷰와 밝은 자연광 덕분에 답답하지 않고, 기분 전환에도 좋습니다. 넓은 테이블이 있어 개인 공부와 그룹 스터디 모두 가능하며, 바로 옆 팀플실에서 회의를 이어가기에도 유용합니다.",
+        hours: "24시간",
+        tags: ["lounge", "view", "24h", "solo", "small", "team"],
+        images: [],
+        mapNote: "학연산클러스터지원센터 라운지 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "global-lounge",
+        name: "학생복지관 글로벌라운지",
+        keywords: ["소파", "자유로운 분위기", "친구랑 공부", "창가 개인석", "07~20시"],
+        description:
+          "자유로운 분위기 속에서 공부할 수 있는 대표적인 라운지 공간입니다. 편안한 소파와 테이블이 있어 친구들과 함께 오기 좋고, 열람실보다 여유로운 자세로 공부할 수 있습니다. 창가 쪽에는 혼자 공부하기 좋은 자리가 많아 개인 학습 공간으로도 인기가 높습니다.",
+        hours: "07:00 ~ 20:00",
+        tags: ["lounge", "sofa", "talk", "day", "solo", "small"],
+        images: [],
+        mapNote: "학생복지관 글로벌라운지 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "icpbl-lounge",
+        name: "컨퍼런스홀 IC-PBL 라운지",
+        keywords: ["한적함", "소규모 스터디", "쾌적", "숨은 스팟", "07~18:30"],
+        description:
+          "넓은 테이블과 여유로운 공간 배치 덕분에 쾌적하게 공부할 수 있는 라운지입니다. 비교적 덜 알려진 공간이라 다른 열람실에 비해 덜 붐비며, 컨퍼런스홀 지하에 위치해 한적하고 차분한 분위기를 유지합니다. 소규모 스터디나 개인 학습을 조용히 하고 싶을 때 좋은 ‘숨은 대안’ 공간입니다.",
+        hours: "07:00 ~ 18:30",
+        tags: ["lounge", "quiet", "small", "solo", "day"],
+        images: [],
+        mapNote: "컨퍼런스홀 IC-PBL 라운지 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "global-reading",
+        name: "글로벌문화통상관 독서실",
+        keywords: ["매우 조용", "도서관급 집중", "시험기간 추천", "24시간"],
+        description:
+          "아늑하고 조용한 분위기의 독서실로, 실제 이용자들 사이에서 ‘도서관보다 더 집중이 잘 된다’는 후기가 있을 정도로 정숙한 학습 환경을 제공합니다. 시험기간에 소음으로부터 완전히 벗어나 집중하고 싶을 때 특히 추천할 만한 공간입니다.",
+        hours: "24시간",
+        tags: ["quiet", "examQuiet", "24h", "solo"],
+        images: [],
+        mapNote: "글로벌문화통상관 독서실 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "hakjeong-reading1",
+        name: "학정 제1열람실 (2층)",
+        keywords: ["완전 조용", "진지한 분위기", "혼자 공부", "좌석 예약", "24시간"],
+        description:
+          "매우 조용하고 진지한 학습 분위기의 열람실로, 혼자 집중해서 공부하기 좋은 장소입니다. 좌석 예약 시스템을 통해 이용할 수 있으며, 평소에는 6시간, 시험기간에는 3시간까지 사용 가능하고 시간 연장도 가능합니다. 시험기간에는 특히 많은 학생이 이용합니다.",
+        hours: "24시간 (좌석 예약제)",
+        tags: ["quiet", "examQuiet", "24h", "solo"],
+        images: [],
+        mapNote: "학술정보관(학정) 제1열람실 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "hakjeong-reading2",
+        name: "학정 제2열람실 (4층)",
+        keywords: ["밝은 분위기", "마우스 사용", "휴식공간", "좌석 예약", "24시간"],
+        description:
+          "제1열람실보다 조금 더 밝은 분위기의 열람실입니다. 마우스 사용이 가능해 노트북 활용에 유리하고, 누워서 쉴 수 있는 공간도 마련되어 있어 공부와 휴식을 번갈아가며 할 수 있습니다. 좌석 예약 방식은 제1열람실과 동일하며, 시험기간에는 인원이 많습니다.",
+        hours: "24시간 (좌석 예약제)",
+        tags: ["quiet", "laptop", "24h", "solo"],
+        images: [],
+        mapNote: "학술정보관(학정) 제2열람실 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "holmz-lounge",
+        name: "학정 노상일 HOLMZ 라운지 (4층)",
+        keywords: ["잔잔한 음악", "편안한 분위기", "혼자/그룹", "룸", "24시간"],
+        description:
+          "잔잔한 음악이 흘러나와 편안한 분위기에서 공부할 수 있는 라운지입니다. 혼자 앉는 좌석뿐 아니라 여러 명이 함께 사용할 수 있는 룸이 있어, 개인 공부와 그룹 스터디 모두에 적합합니다. 룸은 11:00~24:00까지 이용 가능합니다.",
+        hours: "24시간 (룸: 11:00 ~ 24:00)",
+        tags: ["lounge", "music", "talk", "solo", "small", "team", "24h"],
+        images: [],
+        mapNote: "학정 HOLMZ 라운지 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "sangsang-lounge",
+        name: "학정 상상라운지 (2층)",
+        keywords: ["감성 조명", "조용한 라운지", "개인 공부", "소파석", "24시간"],
+        description:
+          "기본 라운지보다 조용하고 진지한 분위기를 가진 공간입니다. 전체적으로 따뜻한 톤의 어두운 조명으로 감성적인 분위기를 제공하며, 입구 좌측 가장자리에는 소파형 좌석이 있어 편안한 자세로 공부할 수 있습니다. 개인 공부에 잘 어울리는 장소입니다.",
+        hours: "24시간",
+        tags: ["quiet", "lounge", "sofa", "solo", "24h"],
+        images: [],
+        mapNote: "학정 상상라운지 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "hakjeong-lounge",
+        name: "학정 라운지 (2층)",
+        keywords: ["팀플/쉬기", "소파", "대화 가능", "24시간"],
+        description:
+          "집중해서 공부하다가 쉬고 싶을 때, 혹은 팀플을 할 때 이용하기 좋은 라운지입니다. 소파와 테이블이 있어 편안한 자세로 앉을 수 있으며, 대화가 가능한 분위기라 조별 과제나 간단한 미팅을 진행하기 좋습니다.",
+        hours: "24시간",
+        tags: ["lounge", "talk", "sofa", "team", "small", "large", "24h"],
+        images: [],
+        mapNote: "학정 2층 라운지 위치 지도를 삽입하세요.",
+      },
+      {
+        id: "group-study",
+        name: "학정 그룹 스터디룸 (4층)",
+        keywords: ["팀플 전용", "룸 예약", "화이트보드", "11~24시"],
+        description:
+          "팀 프로젝트나 발표 준비를 위한 그룹 스터디에 특화된 공간으로, 룸 단위로 예약하여 사용할 수 있습니다. 화이트보드가 비치되어 있어 아이디어를 정리하고 회의를 진행하기에 유용합니다.",
+        hours: "11:00 ~ 24:00",
+        tags: ["team", "small", "large", "talk", "day"],
+        images: [],
+        mapNote: "학정 그룹 스터디룸 위치 지도를 삽입하세요.",
+      },
+    ];
+
+    /*
+      ========================
+      질문 옵션 선택 / 단계 표시
+      ========================
+    */
+    const answers = {
+      mood: null,
+      people: null,
+      time: null,
+      style: null,
+    };
+
+    const errorMessage = document.getElementById("errorMessage");
+
+    function setActiveStep(step) {
+      const items = document.querySelectorAll(".step-item");
+      items.forEach((el) => {
+        el.classList.toggle("active", Number(el.dataset.step) === step);
       });
     }
 
-    // 옵션 버튼 클릭 시 선택 상태 및 진행 바 업데이트
-    document.querySelectorAll(".question .options").forEach(function (optionsWrap) {
-      optionsWrap.addEventListener("click", function (event) {
-        const target = event.target;
-        if (!target.classList.contains("option-button")) return;
+    // 질문 카드 클릭 시 해당 단계 활성화
+    document
+      .querySelectorAll(".question-card")
+      .forEach((card) =>
+        card.addEventListener("click", () => {
+          const step = Number(card.dataset.step);
+          setActiveStep(step);
+        })
+      );
 
-        // 같은 질문 안의 다른 옵션 선택 해제
-        optionsWrap.querySelectorAll(".option-button").forEach(function (btn) {
-          btn.classList.remove("selected");
-        });
-
-        // 현재 클릭된 버튼 선택
-        target.classList.add("selected");
-
-        // 진행 상태 막대 업데이트
-        updateProgress();
+    // 단계 인디케이터 클릭 시 해당 질문 카드로 스크롤
+    document.querySelectorAll(".step-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        const step = Number(item.dataset.step);
+        setActiveStep(step);
+        const card = document.querySelector(
+          `.question-card[data-step="${step}"]`
+        );
+        if (card) {
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
       });
     });
 
-    // 추천 버튼 클릭 시 결과 영역 보여주기 (간단한 예시 로직)
-    document.getElementById("recommend-btn").addEventListener("click", function () {
-      const resultSection = document.getElementById("result-section");
+    // 옵션 버튼 선택 처리
+    document.querySelectorAll(".option-list").forEach((list) => {
+      const questionKey = list.dataset.question;
+      list.querySelectorAll(".option-button").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation(); // 카드 클릭과 겹치지 않게 막기
+          // 같은 질문 내에서 하나만 선택되도록
+          list
+            .querySelectorAll(".option-button")
+            .forEach((b) => b.classList.remove("selected"));
+          button.classList.add("selected");
+          answers[questionKey] = button.dataset.value;
+          errorMessage.style.display = "none";
 
-      const answers = {};
-      document.querySelectorAll(".question").forEach(function (q) {
-        const qId = q.getAttribute("data-question-id");
-        const selected = q.querySelector(".option-button.selected");
-        if (selected) {
-          answers[qId] = selected.getAttribute("data-value");
-        }
+          // 해당 질문의 단계 활성화
+          const parentCard = button.closest(".question-card");
+          if (parentCard) {
+            setActiveStep(Number(parentCard.dataset.step));
+          }
+        });
       });
+    });
 
-      const resultNameEl = document.getElementById("result-name");
-      const resultDescEl = document.getElementById("result-desc");
-      const resultTagsEl = document.getElementById("result-tags");
+    /*
+      ===================
+      추천 로직 (점수 방식)
+      ===================
+    */
+    function scoreSpot(spot, { mood, people, time, style }) {
+      let score = 0;
 
-      // -------------------------
-      // TODO: 여기부터 네이버 블로그에 나온 실제 장소 이름에 맞게
-      //       if 조건문을 직접 수정해서 추천 로직을 짜면 됩니다.
-      //       (지금은 단순 예시)
-      // -------------------------
+      // 분위기(mood)
+      if (mood && spot.tags.includes(mood)) score += 3;
+      // 인원(people)
+      if (people && spot.tags.includes(people)) score += 2;
+      // 시간(time)
+      if (time === "late" && spot.tags.includes("24h")) score += 2;
+      if (time === "day" && spot.tags.includes("day")) score += 2;
+      // 스타일(style)
+      if (style && spot.tags.includes(style)) score += 3;
 
-      if (answers.q1 === "문제풀이" && answers.q2 === "매우조용") {
-        // 예시: 조용한 문제풀이용 공간
-        resultNameEl.textContent = "중앙도서관 3층 일반열람실 (예시)";
-        resultDescEl.textContent =
-          "문제풀이와 집중 공부에 적합한 조용한 열람실입니다. 개인 좌석이 많고, 소음이 거의 없어 장시간 공부하기 좋아요.";
-        resultTagsEl.innerHTML = `
-          <span class="tag">🔇 아주 조용함</span>
-          <span class="tag">🪑 개인 좌석</span>
-          <span class="tag">📚 도서 접근 편리</span>
-        `;
-      } else if (answers.q1 === "팀플" || answers.q1 === "팀플·조별과제") {
-        // 예시: 팀플용 공간
-        resultNameEl.textContent = "학술정보관 그룹스터디룸 (예시)";
-        resultDescEl.textContent =
-          "서로 대화하면서 과제하기 좋은 공간입니다. 화이트보드와 모니터가 준비되어 있어 발표 준비에도 좋아요.";
-        resultTagsEl.innerHTML = `
-          <span class="tag">🧑‍🤝‍🧑 팀플에 적합</span>
-          <span class="tag">💬 자유로운 대화 가능</span>
-          <span class="tag">🖥 장비 비치</span>
-        `;
-      } else {
-        // 기본 추천
-        resultNameEl.textContent = "ARC 카페 인근 오픈 테이블 (예시)";
-        resultDescEl.textContent =
-          "조금은 활기찬 분위기에서 공부하고 싶을 때 좋은 자리입니다. 음료를 마시며 가볍게 과제하거나 정리하기 좋아요.";
-        resultTagsEl.innerHTML = `
-          <span class="tag">☕ 카페 분위기</span>
-          <span class="tag">🔌 일부 콘센트</span>
-          <span class="tag">😌 적당한 소음</span>
-        `;
+      // 기본적으로 24시간 + quiet / lounge 조합이면 약간 가산점
+      if (spot.tags.includes("24h") && spot.tags.includes("quiet")) score += 1;
+
+      return score;
+    }
+
+    function recommendSpots() {
+      // 필수 질문 체크
+      if (!answers.mood || !answers.people || !answers.time || !answers.style) {
+        errorMessage.textContent =
+          "모든 질문에 하나씩 선택해 주세요! (분위기, 인원, 시간대, 스타일)";
+        errorMessage.style.display = "block";
+        return;
       }
 
-      // 결과 영역 보여주기
-      resultSection.classList.add("visible");
+      const scored = spots
+        .map((spot) => ({
+          spot,
+          score: scoreSpot(spot, answers),
+        }))
+        .filter((item) => item.score > 0);
+
+      // 점수 기준으로 정렬
+      scored.sort((a, b) => b.score - a.score);
+
+      const resultList = document.getElementById("resultList");
+      resultList.innerHTML = "";
+
+      if (scored.length === 0) {
+        const div = document.createElement("div");
+        div.className = "empty-state";
+        div.innerHTML =
+          "조건에 딱 맞는 장소를 찾지 못했어요.<br/>질문 선택을 조금 다르게 바꿔서 다시 시도해 볼까요?";
+        resultList.appendChild(div);
+        return;
+      }
+
+      const topTwo = scored.slice(0, 2);
+
+      topTwo.forEach(({ spot }) => {
+        const card = document.createElement("article");
+        card.className = "spot-card";
+        card.dataset.spotId = spot.id;
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "spot-name";
+        nameEl.textContent = spot.name;
+
+        const tagList = document.createElement("div");
+        tagList.className = "tag-list";
+        spot.keywords.forEach((kw) => {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = kw;
+          tagList.appendChild(tag);
+        });
+
+        const summary = document.createElement("p");
+        summary.className = "spot-summary";
+        summary.textContent = spot.description;
+
+        const meta = document.createElement("div");
+        meta.className = "spot-meta";
+        meta.textContent = `이용시간: ${spot.hours}`;
+
+        card.appendChild(nameEl);
+        card.appendChild(tagList);
+        card.appendChild(summary);
+        card.appendChild(meta);
+
+        card.addEventListener("click", () => openModal(spot.id));
+
+        resultList.appendChild(card);
+      });
+    }
+
+    document
+      .getElementById("recommendButton")
+      .addEventListener("click", recommendSpots);
+
+    document.getElementById("resetAnswers").addEventListener("click", () => {
+      Object.keys(answers).forEach((key) => {
+        answers[key] = null;
+      });
+      document
+        .querySelectorAll(".option-button")
+        .forEach((btn) => btn.classList.remove("selected"));
+      errorMessage.style.display = "none";
+      document.getElementById("resultList").innerHTML = `
+        <div class="empty-state">
+          선택이 초기화되었어요.<br />
+          다시 질문에 답한 뒤 <strong>“오늘의 장소 추천 받기”</strong> 버튼을 눌러 주세요.
+        </div>
+      `;
+      setActiveStep(1);
+    });
+
+    /*
+      =================================
+      전체 공부장소 목록(그리드) 채우기
+      =================================
+    */
+    function renderAllSpots() {
+      const grid = document.getElementById("spotGrid");
+      grid.innerHTML = "";
+
+      spots.forEach((spot) => {
+        const card = document.createElement("article");
+        card.className = "spot-grid-card";
+        card.dataset.spotId = spot.id;
+
+        const name = document.createElement("div");
+        name.className = "spot-grid-name";
+        name.textContent = spot.name;
+
+        const desc = document.createElement("p");
+        desc.className = "spot-grid-desc";
+        desc.textContent = spot.description;
+
+        const meta = document.createElement("div");
+        meta.className = "spot-grid-meta";
+        meta.textContent = `이용시간: ${spot.hours} | 키워드: ${spot.keywords.join(
+          ", "
+        )}`;
+
+        card.appendChild(name);
+        card.appendChild(desc);
+        card.appendChild(meta);
+
+        card.addEventListener("click", () => openModal(spot.id));
+
+        grid.appendChild(card);
+      });
+    }
+
+    renderAllSpots();
+
+    /*
+      ===================
+      모달(상세 보기) 처리
+      ===================
+    */
+    const modal = document.getElementById("spotModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalHours = document.getElementById("modalHours");
+    const modalTags = document.getElementById("modalTags");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalImages = document.getElementById("modalImages");
+    const mapContainer = document.getElementById("mapContainer");
+
+    function openModal(spotId) {
+      const spot = spots.find((s) => s.id === spotId);
+      if (!spot) return;
+
+      modalTitle.textContent = spot.name;
+      modalHours.textContent = `이용시간: ${spot.hours}`;
+
+      modalTags.innerHTML = "";
+      spot.keywords.forEach((kw) => {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = kw;
+        modalTags.appendChild(tag);
+      });
+
+      modalDescription.textContent = spot.description;
+
+      // 이미지 영역 초기화 후, 이미지가 있으면 추가
+      modalImages.innerHTML = "";
+      if (spot.images && spot.images.length > 0) {
+        spot.images.forEach((src, index) => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = `${spot.name} 사진 ${index + 1}`;
+          modalImages.appendChild(img);
+        });
+      } else {
+        // TODO: 사진이 아직 없다면, 나중에 직접 이미지 경로를 추가하면 됩니다.
+        const placeholder = document.createElement("div");
+        placeholder.style.fontSize = "11px";
+        placeholder.style.color = "var(--color-muted)";
+        placeholder.style.gridColumn = "1 / -1";
+        placeholder.textContent =
+          "아직 등록된 사진이 없어요. images 배열에 이미지 경로를 추가하면 여기에 표시됩니다.";
+        modalImages.appendChild(placeholder);
+      }
+
+      // 지도 안내 문구 업데이트 (iframe은 직접 추가 필요)
+      mapContainer.querySelector(".map-placeholder-text").innerHTML =
+        `이 공간 안에 <strong>${spot.name}</strong> 위치 지도를 삽입할 수 있습니다.<br />` +
+        `지도 서비스(네이버/카카오/구글 등)에서 임베드 코드를 복사해 iframe으로 넣어 주세요.<br /><br />` +
+        `<em>메모: ${spot.mapNote}</em>`;
+
+      modal.classList.add("open");
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+    }
+
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && modal.classList.contains("open")) {
+        closeModal();
+      }
     });
   </script>
 </body>
